@@ -9,12 +9,11 @@ import mapTheme from '../utils/mapTheme.js';
 const apiKey = process.env.VUE_APP_GOOGLE_MAP_API_KEY;
 
 export default {
-  name: 'MapComponent',
-  components: { MarkerDisplay },
   props: {
     isDarkTheme: Boolean,
   },
-  setup() {
+  components: { MarkerDisplay },
+  setup(props) {
     // refs
     const loader = new Loader({
       apiKey: apiKey,
@@ -42,6 +41,7 @@ export default {
       map.value = new Map(mapDiv.value, {
         center: { lat: -34.397, lng: 150.644 },
         zoom: 8,
+        styles: mapTheme.light,
       });
 
       autocompleteService.value = new google.maps.places.AutocompleteService();
@@ -78,7 +78,7 @@ export default {
         }
 
         const coords = place.geometry.location;
-        newMarker(place.name, coords);
+        newMarker(place.name, coords.lat(), coords.lng());
         map.value.setCenter(coords);
       });
       value.value = '';
@@ -88,23 +88,23 @@ export default {
     const onClickMarkerItem = (marker) => {
       map.value.setCenter(marker.getPosition());
     };
-    const markerExists = (coords) => {
+    const markerExists = (lat, lng) => {
       return markers.value.some((marker) => {
         return (
-          marker.getPosition().lat().toFixed(3) === coords.lat().toFixed(3) &&
-          marker.getPosition().lng().toFixed(3) === coords.lng().toFixed(3)
+          marker.getPosition().lat().toFixed(3) === lat.toFixed(3) &&
+          marker.getPosition().lng().toFixed(3) === lng.toFixed(3)
         );
       });
     };
 
-    const newMarker = (description, coords) => {
+    const newMarker = (description, lat, lng) => {
       const newMarker = new google.maps.Marker({
-        position: coords,
+        position: { lat: lat, lng: lng },
         map: map.value,
         description: description,
       });
 
-      if (!markerExists(coords)) {
+      if (!markerExists(lat, lng)) {
         markers.value.push(newMarker);
         googleMarkers.push(newMarker);
       }
@@ -115,7 +115,7 @@ export default {
       getGeolocation().then((result) => {
         let coords = result.coords;
 
-        newMarker('My Location', coords);
+        newMarker('My Location', coords.lat, coords.lng);
         map.value.setCenter(coords);
         getGeoLocationLoading.value = false;
       });
@@ -141,12 +141,12 @@ export default {
     };
     // watch change in isDarkTheme
     watch(
-      () => this.isDarkTheme,
+      () => props.isDarkTheme,
       (newValue) => {
         if (newValue) {
-          map.value.setOptions({ styles: darkTheme });
+          map.value.setOptions({ styles: mapTheme.dark });
         } else {
-          map.value.setOptions({ styles: defaultTheme });
+          map.value.setOptions({ styles: mapTheme.light });
         }
       }
     );
@@ -179,29 +179,18 @@ export default {
   border-radius: 1rem;
   margin-left: 2rem;
 }
+.search-bar {
+  margin-top: 2rem;
+  .auto-complete {
+    width: 95%;
+    margin-right: 1rem;
+  }
+}
 </style>
 
 <template>
-  <a-row :gutter="16" align="middle">
-    <a-auto-complete
-      v-model:value="value"
-      :options="options"
-      style="width: 200px"
-      placeholder="input here"
-      @select="onSelect"
-      @search="onSearch"
-    />
-    <a-col
-      ><a-button
-        type="primary"
-        @click="getSelfGeolocation"
-        :loading="getGeoLocationLoading"
-        >Get Current Location</a-button
-      ></a-col
-    >
-  </a-row>
   <a-divider></a-divider>
-  <a-row class="max-width" justify="center">
+  <a-row class="max-width" justify="start">
     <a-col :span="14"><div ref="mapDiv" class="map-container"></div></a-col>
     <a-col class="marker-container" :span="8"
       ><MarkerDisplay
@@ -209,6 +198,36 @@ export default {
         :onClickMarkerItem="onClickMarkerItem"
         :onDelete="deleteMarkers"
       ></MarkerDisplay>
+    </a-col>
+  </a-row>
+
+  <a-row
+    class="max-width search-bar"
+    :gutter="32"
+    align="middle"
+    justify="start"
+    ><a-col :span="14">
+      <a-row class="max-width" justify="space-between" align="middle"
+        ><a-col flex="1"
+          ><a-auto-complete
+            size="large"
+            class="auto-complete"
+            v-model:value="value"
+            :options="options"
+            placeholder="Search"
+            @select="onSelect"
+            @search="onSearch"
+          />
+        </a-col>
+        <a-col
+          ><a-button
+            type="primary"
+            @click="getSelfGeolocation"
+            :loading="getGeoLocationLoading"
+            >Mark My Location</a-button
+          ></a-col
+        ></a-row
+      >
     </a-col>
   </a-row>
 </template>

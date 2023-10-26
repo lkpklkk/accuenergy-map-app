@@ -5,7 +5,6 @@ import MapComponent from './components/MapComponent.vue';
 export default {
   name: 'App',
   components: { MapComponent },
-
   setup() {
     const isDarkTheme = ref(false);
 
@@ -13,7 +12,6 @@ export default {
       return isDarkTheme.value ? theme.darkAlgorithm : theme.defaultAlgorithm;
     });
 
-    // TODO: change to more appropriate color
     const backgroundColor = computed(() => {
       return isDarkTheme.value ? '#001524' : '#F6F1EE';
     });
@@ -21,7 +19,7 @@ export default {
     const toggleTheme = () => {
       isDarkTheme.value = !isDarkTheme.value;
     };
-    return { selectedTheme, toggleTheme, backgroundColor };
+    return { selectedTheme, toggleTheme, backgroundColor, isDarkTheme };
   },
 };
 </script>
@@ -38,7 +36,6 @@ export default {
   height: 100vh;
   padding: 5rem;
   display: flex;
-  justify-content: center;
   flex-direction: column;
 }
 .map-container {
@@ -53,16 +50,16 @@ export default {
   >
     <div class="home-container" :style="{ background: backgroundColor }">
       <div>
-        <a-row justify="space-between"
-          ><a-col>
+        <a-row justify="start" align="middle" gutter="32">
+          <a-col>
             <a-typography>
-              <a-typography-title
+              <a-typography-title style="margin: 0"
                 >Accuenergy Map App</a-typography-title
-              ></a-typography
-            ></a-col
+              >
+            </a-typography></a-col
           ><a-col><a-button @click="toggleTheme">Toggle Theme</a-button></a-col>
         </a-row>
-        <a-row><MapComponent :isDarkTheme="isDarkTheme"></MapComponent></a-row>
+        <a-row><MapComponent :isDarkTheme="isDarkTheme" /></a-row>
       </div>
     </div>
   </a-config-provider>

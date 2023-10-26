@@ -1,4 +1,4 @@
-export default mapTheme = {
+const mapTheme = {
   light: [
     {
       elementType: 'geometry',
@@ -376,3 +376,4 @@ export default mapTheme = {
     },
   ],
 };
+export default mapTheme;
