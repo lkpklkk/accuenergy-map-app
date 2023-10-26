@@ -22,6 +22,7 @@ export default {
   methods: {
     handlePageChange(page) {
       this.currentPage = page;
+      this.selectedMarkers = [];
     },
     displayedMarkers() {
       if (this.markers.length <= this.pageSize) {
@@ -64,7 +65,7 @@ export default {
   <div class="marker-display-container">
     <div v-if="markers.length">
       <a-list
-        ><a-typography-title :level="2">Searched</a-typography-title
+        ><a-typography-title :level="2">Markers</a-typography-title
         ><a-list-item
           v-for="marker in displayedMarkers()"
           :key="generateMakerKey(marker)"
