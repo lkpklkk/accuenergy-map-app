@@ -43,7 +43,7 @@ export default {
 }
 .map-container {
   width: 100%;
-  height: 40vh;
+  height: 60vh;
 }
 @media screen and (max-width: 768px) {
   #app {

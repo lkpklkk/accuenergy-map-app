@@ -182,7 +182,7 @@ export default {
   border-radius: 1em;
   box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
   flex: auto;
-  height: 40vh;
+  height: 60vh;
 }
 .max-width {
   width: 100%;
