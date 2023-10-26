@@ -124,14 +124,13 @@ export default {
     const deleteMarkers = (toBeDeletedMarkers) => {
       toBeDeletedMarkers.forEach((marker) => {
         // Remove the marker from the map
-        console.log(marker.getPosition());
+
         const googleIndex = googleMarkers.findIndex((m) => {
           return markerIsEqual(m, marker);
         });
         if (googleIndex !== -1) {
           googleMarkers[googleIndex].setMap(null);
         } else {
-          console.log('not found');
           alert('not found');
         }
 
@@ -169,21 +168,37 @@ export default {
 <style>
 .map-container {
   width: 100%;
-  border-radius: 1rem;
-  box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.2);
+  border-radius: 1em;
+  box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+  flex: auto;
+  height: 40vh;
 }
 .max-width {
   width: 100%;
 }
 .marker-container {
-  border-radius: 1rem;
-  margin-left: 2rem;
+  border-radius: 1em;
+  margin-left: 2em;
 }
 .search-bar {
-  margin-top: 2rem;
+  margin-top: 2em;
   .auto-complete {
     width: 95%;
-    margin-right: 1rem;
+    margin-right: 1em;
+  }
+}
+@media screen and (max-width: 768px) {
+  .search-bar {
+    margin-top: 1em;
+    .auto-complete {
+      width: 95%;
+      margin-right: 1em;
+    }
+  }
+  .marker-container {
+    border-radius: 1em;
+    margin: 0;
+    margin-top: 1em;
   }
 }
 </style>
@@ -191,9 +206,12 @@ export default {
 <template>
   <a-divider></a-divider>
   <a-row class="max-width" justify="start">
-    <a-col :span="14"><div ref="mapDiv" class="map-container"></div></a-col>
-    <a-col class="marker-container" :span="8"
+    <a-col flex="1 1 384px"
+      ><div ref="mapDiv" class="map-container"></div
+    ></a-col>
+    <a-col flex="0 1 384px"
       ><MarkerDisplay
+        class="marker-container"
         :markers="markers"
         :onClickMarkerItem="onClickMarkerItem"
         :onDelete="deleteMarkers"
@@ -210,6 +228,7 @@ export default {
       <a-row class="max-width" justify="space-between" align="middle"
         ><a-col flex="1"
           ><a-auto-complete
+            :disabled="getGeoLocationLoading"
             size="large"
             class="auto-complete"
             v-model:value="value"

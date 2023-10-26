@@ -30,17 +30,28 @@ export default {
   height: 100vh;
   -webkit-font-smoothing: antialiased;
   font-size: 16px;
+  display: flex;
+  flex-direction: column;
 }
 .home-container {
+  flex-grow: 1;
   width: 100%;
-  height: 100vh;
-  padding: 5rem;
+  height: auto;
+  padding: 5em;
   display: flex;
   flex-direction: column;
 }
 .map-container {
   width: 100%;
-  height: 30rem;
+  height: 40vh;
+}
+@media screen and (max-width: 768px) {
+  #app {
+    font-size: 6px;
+  }
+  .map-container {
+    width: 100%;
+  }
 }
 </style>
 
@@ -50,7 +61,7 @@ export default {
   >
     <div class="home-container" :style="{ background: backgroundColor }">
       <div>
-        <a-row justify="start" align="middle" gutter="32">
+        <a-row justify="start" align="middle" :gutter="32">
           <a-col>
             <a-typography>
               <a-typography-title style="margin: 0"

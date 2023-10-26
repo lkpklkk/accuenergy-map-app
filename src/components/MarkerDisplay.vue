@@ -40,7 +40,6 @@ export default {
           (selectedMarker) => selectedMarker !== marker
         );
       } else {
-        console.log('adding', marker);
         this.selectedMarkers.push(marker);
       }
     },
@@ -54,25 +53,22 @@ export default {
 
 <style>
 .marker-display-container {
-  margin-left: 1rem;
+  margin-left: 1em;
   height: inherit;
 }
 .delete-button {
-  margin-left: 3rem;
+  margin-left: 1em;
 }
 </style>
 <template>
   <div class="marker-display-container">
     <div v-if="markers.length">
       <a-list
-        ><a-list-header
-          ><a-typography-title :level="2"
-            >Searched</a-typography-title
-          ></a-list-header
+        ><a-typography-title :level="2">Searched</a-typography-title
         ><a-list-item
           v-for="marker in displayedMarkers()"
           :key="generateMakerKey(marker)"
-          ><a-row align="middle" gutter="16"
+          ><a-row align="middle" :gutter="16"
             ><a-col
               ><a-input
                 size="large"
@@ -96,7 +92,7 @@ export default {
       >
         Delete</a-button
       >
-      <a-col :span="12" align="middle"
+      <a-col :flex="1" align="middle"
         ><a-pagination
           v-if="markers.length"
           :total="markers.length"
