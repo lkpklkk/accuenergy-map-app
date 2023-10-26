@@ -34,6 +34,8 @@ export default {
     const placeService = ref(null);
     const placeQuerySucess = ref(null);
 
+    const focusSearch = ref(null);
+
     onMounted(async () => {
       await loader.load();
       const { Map } = await google.maps.importLibrary('maps');
@@ -49,6 +51,13 @@ export default {
       placeService.value = new google.maps.places.PlacesService(map.value);
 
       placeQuerySucess.value = google.maps.places.PlacesServiceStatus.OK;
+
+      // Attach a global event listener to the window
+      window.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          focusSearch.value.focus();
+        }
+      });
     });
 
     const onSearch = (searchText) => {
@@ -150,6 +159,7 @@ export default {
       }
     );
     return {
+      focusSearch,
       markers,
       value,
       onSearch,
@@ -162,6 +172,7 @@ export default {
       deleteMarkers,
     };
   },
+  methods: {},
 };
 </script>
 
@@ -228,6 +239,7 @@ export default {
       <a-row class="max-width" justify="space-between" align="middle"
         ><a-col flex="1"
           ><a-auto-complete
+            ref="focusSearch"
             :disabled="getGeoLocationLoading"
             size="large"
             class="auto-complete"
